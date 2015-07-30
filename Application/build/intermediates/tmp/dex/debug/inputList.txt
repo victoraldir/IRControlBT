@@ -1,0 +1,7 @@
+/home/victor/Desenvolvimento/projetos/IRControlBT/Application/build/intermediates/classes/debug
+/home/victor/Desenvolvimento/projetos/IRControlBT/Application/build/intermediates/pre-dexed/debug/support-annotations-21.0.2-35d7d3248c3fdf043da62b38ecc15c674359fb0f.jar
+/home/victor/Desenvolvimento/projetos/IRControlBT/Application/build/intermediates/pre-dexed/debug/classes-69e14a678d112b109d4224b2b9ca633f223628b2.jar
+/home/victor/Desenvolvimento/projetos/IRControlBT/Application/build/intermediates/pre-dexed/debug/classes-eda9f7c4c1f7a2e91daf8497ee6c125bef12dd58.jar
+/home/victor/Desenvolvimento/projetos/IRControlBT/Application/build/intermediates/pre-dexed/debug/internal_impl-21.0.2-e5913b041c41aa5d6cf35e4cc43e5e57bf718850.jar
+/home/victor/Desenvolvimento/projetos/IRControlBT/Application/build/intermediates/pre-dexed/debug/classes-36489194e879bee3a970f4b8fb38ac51ced199db.jar
+/home/victor/Desenvolvimento/projetos/IRControlBT/Application/build/intermediates/pre-dexed/debug/classes-3887938ec3ba51c742d6994c7119417bd771109c.jar
