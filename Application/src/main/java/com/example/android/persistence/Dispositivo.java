@@ -20,12 +20,16 @@ public class Dispositivo {
         return id;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getDescricao() {
         return descricao;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
     public Ambiente getAmbiente() {
@@ -34,10 +38,6 @@ public class Dispositivo {
 
     public void setAmbiente(Ambiente ambiente) {
         this.ambiente = ambiente;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
     }
 
     public Set<Comando> getComandos() {

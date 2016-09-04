@@ -1,7 +1,7 @@
 package com.example.android.activities;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.android.application.MyApplication;
+import com.example.android.bluetoothchat.R;
 import com.example.android.persistence.Ambiente;
 import com.example.android.persistence.MySQLiteHelper;
 import com.example.android.persistence.OperationType;
@@ -20,6 +21,35 @@ public class RoomActivity extends ActionBarActivity {
     EditText editAmbienteDescricao;
     Button buttonAmbienteCadastrar;
     Ambiente roomSelected = null;
+    private View.OnClickListener eventoCadastrar = new View.OnClickListener() {
+
+        @SuppressWarnings("unchecked")
+        public void onClick(View v) {
+
+            String descricao = editAmbienteDescricao.getText().toString();
+
+            if (descricao.equals("")) {
+                Toast toast = Toast.makeText(getApplicationContext(), "Você precisa digitar uma descrição", Toast.LENGTH_SHORT);
+                toast.show();
+
+            } else {
+
+                Ambiente newAmbiente = null;
+
+                if (roomSelected == null) {
+                    newAmbiente = new Ambiente();
+
+                } else {
+                    newAmbiente = roomSelected;
+                }
+
+                newAmbiente.setDescricao(descricao);
+                MySQLiteHelper.getInstance(getApplicationContext()).inserirAtualizarAmbiente(newAmbiente);
+                finish();
+            }
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,46 +63,16 @@ public class RoomActivity extends ActionBarActivity {
 
         Bundle b = getIntent().getExtras();
 
-        if(b != null && b.getString("opType", null) != null && b.getString("opType").equals(OperationType.EDIT.name())){
+        if (b != null && b.getString("opType", null) != null && b.getString("opType").equals(OperationType.EDIT.name())) {
             try {
                 //ambienteBanco = MySQLiteHelper.getInstance(getApplicationContext()).getRoomById(b.getLong("idRoom"));
                 roomSelected = ((MyApplication) getApplication()).getRoomSelected();
                 editAmbienteDescricao.setText(roomSelected.getDescricao());
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 onDestroy();
             }
         }
     }
-
-    private View.OnClickListener eventoCadastrar = new View.OnClickListener() {
-
-        @SuppressWarnings("unchecked")
-        public void onClick(View v) {
-
-                String descricao = editAmbienteDescricao.getText().toString();
-
-                if(descricao.equals("")){
-                    Toast toast = Toast.makeText(getApplicationContext(), "Você precisa digitar uma descrição", Toast.LENGTH_SHORT);
-                    toast.show();
-
-                }else{
-
-                    Ambiente newAmbiente = null;
-
-                    if(roomSelected == null) {
-                        newAmbiente = new Ambiente();
-
-                    }else{
-                        newAmbiente = roomSelected;
-                    }
-
-                    newAmbiente.setDescricao(descricao);
-                    MySQLiteHelper.getInstance(getApplicationContext()).inserirAtualizarAmbiente(newAmbiente);
-                    finish();
-                }
-
-        }
-    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

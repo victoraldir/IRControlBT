@@ -13,18 +13,17 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   -->
-<LinearLayout
-      xmlns:android="http://schemas.android.com/apk/res/android"
-      android:orientation="vertical"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:id="@+id/sample_main_layout">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sample_main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
 
     <ListView
+        android:id="@+id/listViewAppliance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/listViewAppliance"
         android:layout_gravity="center_horizontal" />
 </LinearLayout>
 

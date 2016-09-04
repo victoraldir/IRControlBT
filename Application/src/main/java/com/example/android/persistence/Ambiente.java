@@ -1,7 +1,5 @@
 package com.example.android.persistence;
 
-import java.util.Set;
-
 /**
  * Created by victor on 05/04/15.
  */

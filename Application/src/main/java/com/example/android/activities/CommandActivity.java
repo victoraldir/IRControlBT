@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.android.application.MyApplication;
+import com.example.android.bluetoothchat.R;
 import com.example.android.persistence.Comando;
 import com.example.android.persistence.Dispositivo;
 import com.example.android.persistence.MySQLiteHelper;
@@ -41,76 +42,6 @@ public class CommandActivity extends ActionBarActivity {
     String codeReceived = null;
 
     Button buttonSelected;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_command);
-
-        rel = (RelativeLayout) findViewById(R.id.layout_commands);
-
-        rel.getChildCount();
-
-        applianceSelected = ((MyApplication) getApplication()).getApplianceSelected();
-
-        mContext = getApplication();
-
-        loadCustomDialogForm();
-
-        initButtons();
-     }
-
-    private void loadCustomDialogForm(){
-        dialogLabel = new Dialog(CommandActivity.this);
-
-        dialogLabel.setContentView(R.layout.dialog_custon_command);
-        dialogLabel.setTitle("Rótulo do botão");
-
-        // set the custom dialog components - text, image and button
-        Button button = (Button) dialogLabel.findViewById(R.id.btnSave);
-        final EditText edtRodulo = (EditText) dialogLabel.findViewById(R.id.buttonLabel);
-        // if button is clicked, close the custom dialog
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //dialogLabel.dismiss();
-                Comando cmd = new Comando();
-
-                cmd.setCodigo(codeReceived);
-                cmd.setDescricao(edtRodulo.getText().toString());
-                cmd.setPosicao(Posicao.valueOf(buttonSelected.getTag().toString()));
-                cmd.setDispositivo(applianceSelected);
-
-                MySQLiteHelper.getInstance(mContext).inserirAtualizarComando(cmd);
-
-                buttonSelected.setText(cmd.getDescricao());
-                dialogLabel.dismiss();
-            }
-        });
-
-    }
-
-    private void initButtons(){
-
-        for(int i=0;i<rel.getChildCount();i++){
-            View child=rel.getChildAt(i);
-            child.setOnClickListener(evtShortClick);
-
-            try {
-                Comando cmd = MySQLiteHelper.getInstance(mContext).getCommandById(applianceSelected.getId(), Posicao.valueOf(child.getTag().toString()).ordinal());
-
-                if(cmd != null){
-                    ((Button) child).setText(cmd.getDescricao());
-                }else{
-                    ((Button) child).setText("Vazio");
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
     private View.OnClickListener evtShortClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -120,7 +51,7 @@ public class CommandActivity extends ActionBarActivity {
 
                 buttonSelected = (Button) v;
 
-                if(cmd == null){
+                if (cmd == null) {
                     CommandActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -153,6 +84,75 @@ public class CommandActivity extends ActionBarActivity {
     };
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_command);
+
+        rel = (RelativeLayout) findViewById(R.id.layout_commands);
+
+        rel.getChildCount();
+
+        applianceSelected = ((MyApplication) getApplication()).getApplianceSelected();
+
+        mContext = getApplication();
+
+        loadCustomDialogForm();
+
+        initButtons();
+    }
+
+    private void loadCustomDialogForm() {
+        dialogLabel = new Dialog(CommandActivity.this);
+
+        dialogLabel.setContentView(R.layout.dialog_custon_command);
+        dialogLabel.setTitle("Rótulo do botão");
+
+        // set the custom dialog components - text, image and button
+        Button button = (Button) dialogLabel.findViewById(R.id.btnSave);
+        final EditText edtRodulo = (EditText) dialogLabel.findViewById(R.id.buttonLabel);
+        // if button is clicked, close the custom dialog
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //dialogLabel.dismiss();
+                Comando cmd = new Comando();
+
+                cmd.setCodigo(codeReceived);
+                cmd.setDescricao(edtRodulo.getText().toString());
+                cmd.setPosicao(Posicao.valueOf(buttonSelected.getTag().toString()));
+                cmd.setDispositivo(applianceSelected);
+
+                MySQLiteHelper.getInstance(mContext).inserirAtualizarComando(cmd);
+
+                buttonSelected.setText(cmd.getDescricao());
+                dialogLabel.dismiss();
+            }
+        });
+
+    }
+
+    private void initButtons() {
+
+        for (int i = 0; i < rel.getChildCount(); i++) {
+            View child = rel.getChildAt(i);
+            child.setOnClickListener(evtShortClick);
+
+            try {
+                Comando cmd = MySQLiteHelper.getInstance(mContext).getCommandById(applianceSelected.getId(), Posicao.valueOf(child.getTag().toString()).ordinal());
+
+                if (cmd != null) {
+                    ((Button) child).setText(cmd.getDescricao());
+                } else {
+                    ((Button) child).setText("Vazio");
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_command, menu);
@@ -183,13 +183,42 @@ public class CommandActivity extends ActionBarActivity {
 
         // a progress bar - displayed when tweets are retrieved
         private ProgressDialog progressDialog;
+        private AlertDialog.Builder evtCodeReceived = new AlertDialog.Builder(CommandActivity.this)
+                .setTitle("Código Recebido")
+                .setMessage("Deseja testar o comando?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        IREmiterAssync irReceiver = new IREmiterAssync(getApplication(), codeReceived);
+                        irReceiver.execute();
+
+//                synchronized (irReceiver) {
+//                    String dd ="";
+//                }
+
+
+                    }
+                })
+                .setNeutralButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        IRReceiverAssync irReceiver = new IRReceiverAssync(getApplication());
+                        irReceiver.execute();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do noth        ing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert);
+
 
         public IRReceiverAssync(Context mContext) {
             super();
             this.mContext = mContext;
 
         }
-
 
         @Override
         protected Boolean doInBackground(String... params) {
@@ -206,13 +235,11 @@ public class CommandActivity extends ActionBarActivity {
             return msg;
         }
 
-
         @Override
         protected void onPreExecute() {
             // show the progress bar
             this.showProgressDialog("Aguardando comando...");
         }
-
 
         @Override
         protected void onPostExecute(Boolean result) {
@@ -225,43 +252,12 @@ public class CommandActivity extends ActionBarActivity {
             hideProgressDialog();
         }
 
-        private AlertDialog.Builder evtCodeReceived = new AlertDialog.Builder(CommandActivity.this)
-                .setTitle("Código Recebido")
-        .setMessage("Deseja testar o comando?")
-        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-
-                IREmiterAssync irReceiver = new IREmiterAssync(getApplication(), codeReceived);
-                irReceiver.execute();
-
-//                synchronized (irReceiver) {
-//                    String dd ="";
-//                }
-
-
-            }
-        })
-                .setNeutralButton(android.R.string.no,new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-
-                IRReceiverAssync irReceiver = new IRReceiverAssync(getApplication());
-                irReceiver.execute();
-            }
-        })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                // do noth        ing
-            }
-        })
-                .setIcon(android.R.drawable.ic_dialog_alert);
-
         /**
          * Shows a Progress Dialog with a Cancel Button
          *
          * @param msg
          */
-        public void showProgressDialog(String msg)
-        {
+        public void showProgressDialog(String msg) {
             // check for existing progressDialog
             if (progressDialog == null) {
                 // create a progress Dialog
@@ -320,48 +316,6 @@ public class CommandActivity extends ActionBarActivity {
 
         // a progress bar - displayed when tweets are retrieved
         private ProgressDialog progressDialog;
-
-        public IREmiterAssync(Context mContext, String codeToSend) {
-            super();
-            this.mContext = mContext;
-            this.codeToSend = codeToSend;
-        }
-
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            boolean msg = true;
-
-            try {
-                //Toast.makeText(CommandActivity.this, "Enviando... " + codeToSend, Toast.LENGTH_LONG).show();
-                Thread.sleep(1000);
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            return msg;
-        }
-
-
-        @Override
-        protected void onPreExecute() {
-            // show the progress bar
-            this.showProgressDialog("Enviando comando...");
-        }
-
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            if (result) {
-                evtCodeSent.show();
-            } else {
-
-            }
-
-            hideProgressDialog();
-        }
-
         private AlertDialog.Builder evtCodeSent = new AlertDialog.Builder(CommandActivity.this)
                 .setTitle("Código Enviado")
                 .setMessage("Funcionou?")
@@ -379,13 +333,51 @@ public class CommandActivity extends ActionBarActivity {
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert);
 
+
+        public IREmiterAssync(Context mContext, String codeToSend) {
+            super();
+            this.mContext = mContext;
+            this.codeToSend = codeToSend;
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            boolean msg = true;
+
+            try {
+                //Toast.makeText(CommandActivity.this, "Enviando... " + codeToSend, Toast.LENGTH_LONG).show();
+                Thread.sleep(1000);
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            return msg;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // show the progress bar
+            this.showProgressDialog("Enviando comando...");
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                evtCodeSent.show();
+            } else {
+
+            }
+
+            hideProgressDialog();
+        }
+
         /**
          * Shows a Progress Dialog with a Cancel Button
          *
          * @param msg
          */
-        public void showProgressDialog(String msg)
-        {
+        public void showProgressDialog(String msg) {
             // check for existing progressDialog
             if (progressDialog == null) {
                 // create a progress Dialog

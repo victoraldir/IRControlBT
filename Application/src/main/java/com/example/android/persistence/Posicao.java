@@ -1,13 +1,9 @@
 package com.example.android.persistence;
 
-import android.widget.Button;
-
-import com.example.android.bluetoothchat.R;
-
 /**
  * Created by victor on 05/04/15.
  */
-public enum  Posicao {
+public enum Posicao {
 
     _0_0,
     _0_1,

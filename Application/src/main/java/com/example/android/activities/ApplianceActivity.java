@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.android.application.MyApplication;
+import com.example.android.bluetoothchat.R;
 import com.example.android.persistence.Ambiente;
 import com.example.android.persistence.Dispositivo;
 import com.example.android.persistence.MySQLiteHelper;
@@ -24,6 +25,39 @@ public class ApplianceActivity extends ActionBarActivity {
     Dispositivo applianceSelected = null;
     Ambiente roomSelected;
     //private long idRoom;
+    private View.OnClickListener evtInsert = new View.OnClickListener() {
+
+        @SuppressWarnings("unchecked")
+        public void onClick(View v) {
+
+            String descricao = editApplianceDesc.getText().toString();
+
+            if (descricao.equals("")) {
+                Toast toast = Toast.makeText(getApplicationContext(), "Você precisa digitar uma descrição", Toast.LENGTH_SHORT);
+                toast.show();
+
+            } else {
+
+                Dispositivo newAppliance = null;
+
+                if (applianceSelected == null) {
+                    try {
+                        newAppliance = new Dispositivo();
+                        newAppliance.setAmbiente(roomSelected);
+                    } catch (Exception ex) {
+                        onDestroy();
+                    }
+                } else {
+                    newAppliance = applianceSelected;
+                }
+
+                newAppliance.setDescricao(descricao);
+                MySQLiteHelper.getInstance(getApplicationContext()).inserirAtualizarDispositivo(newAppliance);
+                finish();
+            }
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,53 +71,18 @@ public class ApplianceActivity extends ActionBarActivity {
 
         Bundle b = getIntent().getExtras();
 
-        roomSelected =  ((MyApplication) getApplication()).getRoomSelected();
+        roomSelected = ((MyApplication) getApplication()).getRoomSelected();
 
-        if(b != null && b.getString("opType", null) != null &&  b.getString("opType").equals(OperationType.EDIT.name())){
+        if (b != null && b.getString("opType", null) != null && b.getString("opType").equals(OperationType.EDIT.name())) {
             try {
                 //appliancePersisted = MySQLiteHelper.getInstance(getApplicationContext()).getApplianceById(((MyApplication) getApplication()).getApplianceSelected().getId());
                 applianceSelected = ((MyApplication) getApplication()).getApplianceSelected();
                 editApplianceDesc.setText(applianceSelected.getDescricao());
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 onDestroy();
             }
         }
     }
-
-
-    private View.OnClickListener evtInsert = new View.OnClickListener() {
-
-        @SuppressWarnings("unchecked")
-        public void onClick(View v) {
-
-            String descricao = editApplianceDesc.getText().toString();
-
-            if(descricao.equals("")){
-                Toast toast = Toast.makeText(getApplicationContext(), "Você precisa digitar uma descrição", Toast.LENGTH_SHORT);
-                toast.show();
-
-            }else{
-
-                Dispositivo newAppliance = null;
-
-                if(applianceSelected == null) {
-                    try {
-                        newAppliance = new Dispositivo();
-                        newAppliance.setAmbiente(roomSelected);
-                    } catch (Exception ex){
-                        onDestroy();
-                    }
-                }else{
-                    newAppliance = applianceSelected;
-                }
-
-                newAppliance.setDescricao(descricao);
-                MySQLiteHelper.getInstance(getApplicationContext()).inserirAtualizarDispositivo(newAppliance);
-                finish();
-            }
-
-        }
-    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

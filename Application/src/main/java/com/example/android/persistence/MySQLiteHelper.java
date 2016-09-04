@@ -1,6 +1,5 @@
 package com.example.android.persistence;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,22 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
 public class MySQLiteHelper extends SQLiteOpenHelper {
- 
-    // Database Version
-    private static final int DATABASE_VERSION = 1;
-    // Database Name
-    private static final String DATABASE_NAME = "ircontroldb";
-    
-    public final String TB_COMANDO = "comando";
-    public final String TB_DISPOSITIVO = "dispositivo";
-    public final String TB_AMBIENTE = "ambiente";
 
     // Table Comando names
     //public static final String KEY_COMANDO_ID = "id";
@@ -31,31 +19,34 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     public static final String KEY_COMANDO_CODIGO = "codigo";
     public static final String KEY_COMANDO_POSICAO_ID = "posicao_id";
     public static final String KEY_COMANDO_DISPOSITIVO_ID = "dispositivo_id";
-    
-    
     // Table Dispositivo names
     public static final String KEY_DISPOSITIVO_ID = "id";
     public static final String KEY_DISPOSITIVO_DESCRICAO = "descricao";
     public static final String KEY_DISPOSITIVO_AMBIENTE_ID = "ambiente_id";
-
     // Table Ambiente names
     public static final String KEY_AMBIENTE_ID = "id";
     public static final String KEY_AMBIENTE_DESCRICAO = "descricao";
-
+    // Database Version
+    private static final int DATABASE_VERSION = 1;
+    // Database Name
+    private static final String DATABASE_NAME = "ircontroldb";
     private static MySQLiteHelper instance;
-    
-    public static synchronized MySQLiteHelper getInstance(Context ctx){
-    	if(instance == null){
-    		instance = new MySQLiteHelper(ctx);
-    	}
-    	
-    	return instance;
-    }	
-    
+    public final String TB_COMANDO = "comando";
+    public final String TB_DISPOSITIVO = "dispositivo";
+    public final String TB_AMBIENTE = "ambiente";
+
     private MySQLiteHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);  
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
-    
+
+    public static synchronized MySQLiteHelper getInstance(Context ctx) {
+        if (instance == null) {
+            instance = new MySQLiteHelper(ctx);
+        }
+
+        return instance;
+    }
+
     @Override
     public void onOpen(SQLiteDatabase db) {
         super.onOpen(db);
@@ -64,8 +55,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             db.execSQL("PRAGMA foreign_keys=ON;");
         }
     }
- 
-	@Override
+
+    @Override
     public void onCreate(SQLiteDatabase db) {
         // SQL statement to create book table
 
@@ -74,11 +65,11 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 "descricao TEXT)";
 
         String CREATE_DISPOSITIVO_TABLE = "CREATE TABLE " + TB_DISPOSITIVO + " ( " +
-                "id INTEGER PRIMARY KEY, " + 
+                "id INTEGER PRIMARY KEY, " +
                 "descricao TEXT, " +
                 "ambiente_id INTEGER, " +
                 "FOREIGN KEY (ambiente_id) REFERENCES " + TB_AMBIENTE + " (id)  ON DELETE CASCADE)";
- 
+
         String CREATE_COMANDO_TABLE = "CREATE TABLE " + TB_COMANDO + " ( " +
                 "descricao TEXT, "
                 + "codigo TEXT, "
@@ -92,19 +83,19 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_DISPOSITIVO_TABLE);
         db.execSQL(CREATE_COMANDO_TABLE);
     }
- 
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older books table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TB_AMBIENTE);
         db.execSQL("DROP TABLE IF EXISTS " + TB_DISPOSITIVO);
         db.execSQL("DROP TABLE IF EXISTS " + TB_COMANDO);
- 
+
         // create fresh books table
         this.onCreate(db);
     }
 
-    public void inserirAtualizarAmbiente(Ambiente ambiente){
+    public void inserirAtualizarAmbiente(Ambiente ambiente) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -112,76 +103,76 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
         values.put(KEY_AMBIENTE_DESCRICAO, ambiente.getDescricao());
 
-        if(ambiente.getId() != 0){
+        if (ambiente.getId() != 0) {
             values.put(KEY_AMBIENTE_ID, ambiente.getId());
-            db.update(TB_AMBIENTE, values, KEY_AMBIENTE_ID + " = ?",new String[]{String.valueOf(ambiente.getId())});
-        }else{
-            db.insert(TB_AMBIENTE,null,values);
+            db.update(TB_AMBIENTE, values, KEY_AMBIENTE_ID + " = ?", new String[]{String.valueOf(ambiente.getId())});
+        } else {
+            db.insert(TB_AMBIENTE, null, values);
         }
 
         // 4. close
         db.close();
     }
-    
-    public void inserirAtualizarDispositivo(Dispositivo dispositivo){
 
-		SQLiteDatabase db = this.getWritableDatabase();
+    public void inserirAtualizarDispositivo(Dispositivo dispositivo) {
 
-		ContentValues values = new ContentValues();
+        SQLiteDatabase db = this.getWritableDatabase();
 
-		values.put(KEY_DISPOSITIVO_DESCRICAO, dispositivo.getDescricao());
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_DISPOSITIVO_DESCRICAO, dispositivo.getDescricao());
         values.put(KEY_DISPOSITIVO_AMBIENTE_ID, dispositivo.getAmbiente().getId());
 
-        if(dispositivo.getId() != 0){
+        if (dispositivo.getId() != 0) {
             values.put(KEY_DISPOSITIVO_ID, dispositivo.getId());
 
-            db.update(TB_DISPOSITIVO, values, KEY_DISPOSITIVO_ID + " = ?",new String[]{String.valueOf(dispositivo.getId())});
-        }else{
-            db.insert(TB_DISPOSITIVO,null,values);
+            db.update(TB_DISPOSITIVO, values, KEY_DISPOSITIVO_ID + " = ?", new String[]{String.valueOf(dispositivo.getId())});
+        } else {
+            db.insert(TB_DISPOSITIVO, null, values);
         }
 
-		// 4. close
-		db.close(); 
+        // 4. close
+        db.close();
     }
 
-	public void deletarDispositivo(long id){
-		String query = "DELETE FROM " + TB_DISPOSITIVO + " WHERE " + KEY_DISPOSITIVO_ID + " = " + id;
-		
-		// 2. get reference to writable DB
+    public void deletarDispositivo(long id) {
+        String query = "DELETE FROM " + TB_DISPOSITIVO + " WHERE " + KEY_DISPOSITIVO_ID + " = " + id;
+
+        // 2. get reference to writable DB
         SQLiteDatabase db = this.getReadableDatabase();
         db.execSQL(query);
         //db.endTransaction();
-        if (db!=null){
+        if (db != null) {
             db.close();
         }
-	}
+    }
 
-    public void deleteRoom(long idRoom){
+    public void deleteRoom(long idRoom) {
         String query = "DELETE FROM " + TB_AMBIENTE + " WHERE " + KEY_AMBIENTE_ID + " = " + idRoom;
 
         // 2. get reference to writable DB
         SQLiteDatabase db = this.getReadableDatabase();
         db.execSQL(query);
         //db.endTransaction();
-        if (db!=null){
+        if (db != null) {
             db.close();
         }
     }
 
     public List<Dispositivo> listarDispositivos() throws ParseException {
-    	
-    	List<Dispositivo> dispositivos = new LinkedList<Dispositivo>();
-    	 
+
+        List<Dispositivo> dispositivos = new LinkedList<Dispositivo>();
+
         // 1. build the query
         //String query = "SELECT * FROM " + TB_SOLICITACAO + " WHERE cancelamento = 0";
-        
-        String query = "SELECT * FROM " + TB_DISPOSITIVO + " AS d LEFT OUTER JOIN " + TB_COMANDO + " AS c ON d." + KEY_DISPOSITIVO_ID + " = c." + KEY_COMANDO_DISPOSITIVO_ID ;
-        
+
+        String query = "SELECT * FROM " + TB_DISPOSITIVO + " AS d LEFT OUTER JOIN " + TB_COMANDO + " AS c ON d." + KEY_DISPOSITIVO_ID + " = c." + KEY_COMANDO_DISPOSITIVO_ID;
+
         // 2. get reference to writable DB
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         //db.endTransaction();
-  
+
         // 3. go over each row, build book and add it to list
         Dispositivo dispositivo = null;
         if (cursor.moveToFirst()) {
@@ -192,25 +183,25 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 dispositivo.setDescricao(cursor.getString(1));
 
                 //dispositivo.setComandos(listarRastreiosPorSolicitacaoId(solicitaca  o.getId()));
-                
+
                 // Add book to books
                 dispositivos.add(dispositivo);
             } while (cursor.moveToNext());
         }
-  
-        if (cursor!=null){
+
+        if (cursor != null) {
             cursor.close();
         }
-        if (db!=null){
+        if (db != null) {
             db.close();
         }
-        
-        if(dispositivos.isEmpty()){
-        	return null;
-        }else{
 
-        	return dispositivos;
-        	
+        if (dispositivos.isEmpty()) {
+            return null;
+        } else {
+
+            return dispositivos;
+
         }
 
     }
@@ -245,16 +236,16 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
 
-        if (cursor!=null){
+        if (cursor != null) {
             cursor.close();
         }
-        if (db!=null){
+        if (db != null) {
             db.close();
         }
 
-        if(dispositivos.isEmpty()){
+        if (dispositivos.isEmpty()) {
             return null;
-        }else{
+        } else {
 
             return dispositivos;
 
@@ -262,7 +253,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     }
 
-    public List<Ambiente> listarAmbientes(){
+    public List<Ambiente> listarAmbientes() {
 
         List<Ambiente> ambientes = new LinkedList<Ambiente>();
 
@@ -292,16 +283,16 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
 
-        if (cursor!=null){
+        if (cursor != null) {
             cursor.close();
         }
-        if (db!=null){
+        if (db != null) {
             db.close();
         }
 
-        if(ambientes.isEmpty()){
+        if (ambientes.isEmpty()) {
             return null;
-        }else{
+        } else {
 
             return ambientes;
 
@@ -316,7 +307,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         // 1. build the query
         //String query = "SELECT * FROM " + TB_SOLICITACAO + " WHERE cancelamento = 0";
 
-        String query = "SELECT * FROM " + TB_DISPOSITIVO + " AS d INNER JOIN " + TB_AMBIENTE + " AS a ON d." + KEY_DISPOSITIVO_AMBIENTE_ID + " = a." + KEY_AMBIENTE_ID  +" WHERE d." + KEY_DISPOSITIVO_ID + " = " + id;
+        String query = "SELECT * FROM " + TB_DISPOSITIVO + " AS d INNER JOIN " + TB_AMBIENTE + " AS a ON d." + KEY_DISPOSITIVO_AMBIENTE_ID + " = a." + KEY_AMBIENTE_ID + " WHERE d." + KEY_DISPOSITIVO_ID + " = " + id;
 
         // 2. get reference to writable DB
         SQLiteDatabase db = this.getReadableDatabase();
@@ -340,10 +331,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
 
-        if (cursor!=null){
+        if (cursor != null) {
             cursor.close();
         }
-        if (db!=null){
+        if (db != null) {
             db.close();
         }
 
@@ -383,10 +374,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
 
-        if (cursor!=null){
+        if (cursor != null) {
             cursor.close();
         }
-        if (db!=null){
+        if (db != null) {
             db.close();
         }
 
@@ -422,10 +413,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
 
-        if (cursor!=null){
+        if (cursor != null) {
             cursor.close();
         }
-        if (db!=null){
+        if (db != null) {
             db.close();
         }
 
@@ -463,16 +454,16 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
 
-        if (cursor!=null){
+        if (cursor != null) {
             cursor.close();
         }
-        if (db!=null){
+        if (db != null) {
             db.close();
         }
 
-        if(comandos.isEmpty()){
+        if (comandos.isEmpty()) {
             return null;
-        }else{
+        } else {
 
             return comandos;
 
@@ -510,16 +501,16 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
 
-        if (cursor!=null){
+        if (cursor != null) {
             cursor.close();
         }
-        if (db!=null){
+        if (db != null) {
             db.close();
         }
 
-        if(comandos.isEmpty()){
+        if (comandos.isEmpty()) {
             return null;
-        }else{
+        } else {
 
             return comandos;
 
@@ -527,7 +518,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     }
 
-    public void inserirAtualizarComando(Comando comando){
+    public void inserirAtualizarComando(Comando comando) {
 
         SQLiteDatabase db;
 
@@ -544,10 +535,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
             db = this.getWritableDatabase();
 
-            if(cmdDb != null){
-                db.update(TB_DISPOSITIVO, values, KEY_COMANDO_DISPOSITIVO_ID + " = ? AND " + KEY_COMANDO_POSICAO_ID + " =?",new String[]{String.valueOf(comando.getDispositivo().getId()),String.valueOf(comando.getPosicao().ordinal())});
-            }else{
-                db.insert(TB_DISPOSITIVO,null,values);
+            if (cmdDb != null) {
+                db.update(TB_DISPOSITIVO, values, KEY_COMANDO_DISPOSITIVO_ID + " = ? AND " + KEY_COMANDO_POSICAO_ID + " =?", new String[]{String.valueOf(comando.getDispositivo().getId()), String.valueOf(comando.getPosicao().ordinal())});
+            } else {
+                db.insert(TB_DISPOSITIVO, null, values);
             }
 
             // 4. close
