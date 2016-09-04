@@ -45,5 +45,6 @@
     <string name="title_activity_devices_list">DevicesListActivity</string>
     <string name="title_activity_appliance">ApplianceActivity</string>
     <string name="title_activity_command">CommandActivity</string>
+    <string name="add">add</string>
 
 </resources>

@@ -1,9 +1,9 @@
-package com.example.android.application;
+package com.quartzo.ircontrol.application;
 
 import android.app.Application;
 
-import com.example.android.persistence.Ambiente;
-import com.example.android.persistence.Dispositivo;
+import com.quartzo.ircontrol.persistence.Ambiente;
+import com.quartzo.ircontrol.persistence.Dispositivo;
 
 /**
  * Created by victor on 26/05/15.

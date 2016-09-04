@@ -1,4 +1,4 @@
-package com.example.android.persistence;
+package com.quartzo.ircontrol.persistence;
 
 import java.util.Set;
 

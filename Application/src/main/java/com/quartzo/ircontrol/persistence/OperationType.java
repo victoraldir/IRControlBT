@@ -1,4 +1,4 @@
-package com.example.android.persistence;
+package com.quartzo.ircontrol.persistence;
 
 /**
  * Created by victor on 28/05/15.

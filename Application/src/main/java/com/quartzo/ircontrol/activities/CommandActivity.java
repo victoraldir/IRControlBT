@@ -1,4 +1,4 @@
-package com.example.android.activities;
+package com.quartzo.ircontrol.activities;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -16,12 +16,12 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.example.android.application.MyApplication;
+import com.quartzo.ircontrol.application.MyApplication;
 import com.example.android.bluetoothchat.R;
-import com.example.android.persistence.Comando;
-import com.example.android.persistence.Dispositivo;
-import com.example.android.persistence.MySQLiteHelper;
-import com.example.android.persistence.Posicao;
+import com.quartzo.ircontrol.persistence.Comando;
+import com.quartzo.ircontrol.persistence.Dispositivo;
+import com.quartzo.ircontrol.persistence.MySQLiteHelper;
+import com.quartzo.ircontrol.persistence.Posicao;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -155,7 +155,7 @@ public class CommandActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_command, menu);
+        //getMenuInflater().inflate(R.menu.menu_command, menu);
         return true;
     }
 
@@ -167,9 +167,9 @@ public class CommandActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }

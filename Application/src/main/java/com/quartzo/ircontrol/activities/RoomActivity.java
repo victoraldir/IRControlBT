@@ -1,4 +1,4 @@
-package com.example.android.activities;
+package com.quartzo.ircontrol.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -9,11 +9,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.android.application.MyApplication;
+import com.quartzo.ircontrol.application.MyApplication;
 import com.example.android.bluetoothchat.R;
-import com.example.android.persistence.Ambiente;
-import com.example.android.persistence.MySQLiteHelper;
-import com.example.android.persistence.OperationType;
+import com.quartzo.ircontrol.persistence.Ambiente;
+import com.quartzo.ircontrol.persistence.MySQLiteHelper;
+import com.quartzo.ircontrol.persistence.OperationType;
 
 
 public class RoomActivity extends ActionBarActivity {
@@ -77,7 +77,7 @@ public class RoomActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_ambiente, menu);
+        //getMenuInflater().inflate(R.menu.menu_ambiente, menu);
         return true;
     }
 
@@ -89,9 +89,9 @@ public class RoomActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }

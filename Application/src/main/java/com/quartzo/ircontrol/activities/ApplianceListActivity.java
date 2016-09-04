@@ -1,4 +1,4 @@
-package com.example.android.activities;
+package com.quartzo.ircontrol.activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -13,12 +13,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.example.android.application.MyApplication;
+import com.quartzo.ircontrol.application.MyApplication;
 import com.example.android.bluetoothchat.R;
-import com.example.android.persistence.Ambiente;
-import com.example.android.persistence.Dispositivo;
-import com.example.android.persistence.MySQLiteHelper;
-import com.example.android.persistence.OperationType;
+import com.quartzo.ircontrol.persistence.Ambiente;
+import com.quartzo.ircontrol.persistence.Dispositivo;
+import com.quartzo.ircontrol.persistence.MySQLiteHelper;
+import com.quartzo.ircontrol.persistence.OperationType;
 
 import java.text.ParseException;
 import java.util.List;
@@ -135,11 +135,20 @@ public class ApplianceListActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
+        MenuInflater inflater=getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.add:
+                Intent it = new Intent(getApplicationContext(), ApplianceActivity.class);
+                startActivity(it);
+        }
 
         return false;
     }

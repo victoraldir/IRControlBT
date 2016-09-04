@@ -1,4 +1,4 @@
-package com.example.android.persistence;
+package com.quartzo.ircontrol.persistence;
 
 /*
 * VO que representa a entidade responsável por salvar os códigos dos controles
