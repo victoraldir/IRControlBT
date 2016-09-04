@@ -1,4 +1,4 @@
-package com.example.android.bluetoothchat;
+package com.example.android.activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;

@@ -1,4 +1,4 @@
-package com.example.android.bluetoothchat;
+package com.example.android.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;

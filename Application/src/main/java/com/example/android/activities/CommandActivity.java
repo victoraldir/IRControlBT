@@ -1,4 +1,4 @@
-package com.example.android.bluetoothchat;
+package com.example.android.activities;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.application.MyApplication;
@@ -197,6 +196,7 @@ public class CommandActivity extends ActionBarActivity {
             boolean msg = true;
 
             try {
+                //TODO add request code here
                 Thread.sleep(1000);
                 codeReceived = "CODE RECEIVED";
             } catch (InterruptedException e) {
