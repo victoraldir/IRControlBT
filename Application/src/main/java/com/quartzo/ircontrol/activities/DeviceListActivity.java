@@ -32,8 +32,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.quartzo.ircontrol.application.MyApplication;
-import com.example.android.bluetoothchat.R;
-import com.quartzo.ircontrol.persistence.Ambiente;
+import com.quartzo.ircontrol.R;
+import com.quartzo.ircontrol.persistence.Device;
 import com.quartzo.ircontrol.persistence.MySQLiteHelper;
 import com.quartzo.ircontrol.persistence.OperationType;
 
@@ -46,7 +46,7 @@ import java.util.List;
  * For devices with displays with a width of 720dp or greater, the sample log is always visible,
  * on other devices it's visibility is controlled by an item on the Action Bar.
  */
-public class RoomListActivity extends ActionBarActivity {
+public class DeviceListActivity extends ActionBarActivity {
 
     public static final String TAG = "RoomListActivity";
 
@@ -72,7 +72,7 @@ public class RoomListActivity extends ActionBarActivity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-            Ambiente room = ((Ambiente) listViewRoom.getAdapter().getItem(position));
+            Device room = ((Device) listViewRoom.getAdapter().getItem(position));
             ((MyApplication) getApplication()).setRoomSelected(room);
             //Bundle b = new Bundle();
 
@@ -90,12 +90,12 @@ public class RoomListActivity extends ActionBarActivity {
                     "Editar", "Excluir"
             };
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(RoomListActivity.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(DeviceListActivity.this);
             //builder.setTitle("Make your selection");
             builder.setItems(items, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item) {
 
-                    Ambiente room = ((Ambiente) listViewRoom.getAdapter().getItem(position));
+                    Device room = ((Device) listViewRoom.getAdapter().getItem(position));
 
                     if (items[item].equals("Editar")) {
 
@@ -103,7 +103,7 @@ public class RoomListActivity extends ActionBarActivity {
 
                         Bundle b = new Bundle();
                         b.putString("opType", OperationType.EDIT.name());
-                        Intent roomIntent = new Intent(getApplication(), RoomActivity.class);
+                        Intent roomIntent = new Intent(getApplication(), DeviceActivity.class);
                         roomIntent.putExtras(b);
                         startActivity(roomIntent);
 
@@ -144,10 +144,10 @@ public class RoomListActivity extends ActionBarActivity {
     }
 
     private void carregarListaAmbientes() {
-        List<Ambiente> ambientes = MySQLiteHelper.getInstance(getApplicationContext()).listarAmbientes();
+        List<Device> ambientes = MySQLiteHelper.getInstance(getApplicationContext()).listarAmbientes();
 
         if (ambientes != null && ambientes.size() != 0) {
-            ArrayAdapter<Ambiente> adapter = new ArrayAdapter<Ambiente>(this, android.R.layout.simple_list_item_1, ambientes);
+            ArrayAdapter<Device> adapter = new ArrayAdapter<Device>(this, android.R.layout.simple_list_item_1, ambientes);
 
             listViewRoom.setAdapter(adapter);
         } else {
@@ -169,7 +169,7 @@ public class RoomListActivity extends ActionBarActivity {
 
         switch (item.getItemId()){
             case R.id.add:
-                Intent it = new Intent(getApplicationContext(),RoomActivity.class);
+                Intent it = new Intent(getApplicationContext(),DeviceActivity.class);
                 startActivity(it);
                 break;
         }

@@ -1,6 +1,5 @@
 package com.quartzo.ircontrol.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -10,10 +9,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.quartzo.ircontrol.R;
 import com.quartzo.ircontrol.application.MyApplication;
-import com.example.android.bluetoothchat.R;
-import com.quartzo.ircontrol.persistence.Ambiente;
-import com.quartzo.ircontrol.persistence.Dispositivo;
+import com.quartzo.ircontrol.persistence.Device;
+import com.quartzo.ircontrol.persistence.Appliance;
 import com.quartzo.ircontrol.persistence.MySQLiteHelper;
 import com.quartzo.ircontrol.persistence.OperationType;
 
@@ -23,8 +22,8 @@ public class ApplianceActivity extends ActionBarActivity {
 
     EditText editApplianceDesc;
     Button btnApplianceInsert;
-    Dispositivo applianceSelected = null;
-    Ambiente roomSelected;
+    Appliance applianceSelected = null;
+    Device deviceSelected;
     //private long idRoom;
     private View.OnClickListener evtInsert = new View.OnClickListener() {
 
@@ -39,12 +38,12 @@ public class ApplianceActivity extends ActionBarActivity {
 
             } else {
 
-                Dispositivo newAppliance = null;
+                Appliance newAppliance = null;
 
                 if (applianceSelected == null) {
                     try {
-                        newAppliance = new Dispositivo();
-                        newAppliance.setAmbiente(roomSelected);
+                        newAppliance = new Appliance();
+                        newAppliance.setDevice(deviceSelected);
                     } catch (Exception ex) {
                         onDestroy();
                     }
@@ -52,7 +51,7 @@ public class ApplianceActivity extends ActionBarActivity {
                     newAppliance = applianceSelected;
                 }
 
-                newAppliance.setDescricao(descricao);
+                newAppliance.setDescription(descricao);
                 MySQLiteHelper.getInstance(getApplicationContext()).inserirAtualizarDispositivo(newAppliance);
                 finish();
             }
@@ -72,13 +71,13 @@ public class ApplianceActivity extends ActionBarActivity {
 
         Bundle b = getIntent().getExtras();
 
-        roomSelected = ((MyApplication) getApplication()).getRoomSelected();
+        deviceSelected = ((MyApplication) getApplication()).getRoomSelected();
 
         if (b != null && b.getString("opType", null) != null && b.getString("opType").equals(OperationType.EDIT.name())) {
             try {
                 //appliancePersisted = MySQLiteHelper.getInstance(getApplicationContext()).getApplianceById(((MyApplication) getApplication()).getApplianceSelected().getId());
                 applianceSelected = ((MyApplication) getApplication()).getApplianceSelected();
-                editApplianceDesc.setText(applianceSelected.getDescricao());
+                editApplianceDesc.setText(applianceSelected.getDescription());
             } catch (Exception ex) {
                 onDestroy();
             }

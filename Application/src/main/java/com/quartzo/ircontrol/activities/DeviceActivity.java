@@ -10,41 +10,47 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.quartzo.ircontrol.application.MyApplication;
-import com.example.android.bluetoothchat.R;
-import com.quartzo.ircontrol.persistence.Ambiente;
+import com.quartzo.ircontrol.R;
+import com.quartzo.ircontrol.persistence.Device;
 import com.quartzo.ircontrol.persistence.MySQLiteHelper;
 import com.quartzo.ircontrol.persistence.OperationType;
 
 
-public class RoomActivity extends ActionBarActivity {
+public class DeviceActivity extends ActionBarActivity {
 
-    EditText editAmbienteDescricao;
-    Button buttonAmbienteCadastrar;
-    Ambiente roomSelected = null;
-    private View.OnClickListener eventoCadastrar = new View.OnClickListener() {
+    EditText editHost;
+    EditText editPort;
+    EditText editDescription;
+    Button btnSave;
+    Device deviceSelected = null;
+    private View.OnClickListener evtSave = new View.OnClickListener() {
 
         @SuppressWarnings("unchecked")
         public void onClick(View v) {
 
-            String descricao = editAmbienteDescricao.getText().toString();
+            String host = editHost.getText().toString();
+            String port = editPort.getText().toString();
+            String description = editDescription.getText().toString();
 
-            if (descricao.equals("")) {
+            if (description.equals("")) {
                 Toast toast = Toast.makeText(getApplicationContext(), "Você precisa digitar uma descrição", Toast.LENGTH_SHORT);
                 toast.show();
 
             } else {
 
-                Ambiente newAmbiente = null;
+                Device device = null;
 
-                if (roomSelected == null) {
-                    newAmbiente = new Ambiente();
+                if (deviceSelected == null) {
+                    device = new Device();
 
                 } else {
-                    newAmbiente = roomSelected;
+                    device = deviceSelected;
                 }
 
-                newAmbiente.setDescricao(descricao);
-                MySQLiteHelper.getInstance(getApplicationContext()).inserirAtualizarAmbiente(newAmbiente);
+                device.setHost(host);
+                device.setPort(Integer.parseInt(port));
+                device.setDescription(description);
+                MySQLiteHelper.getInstance(getApplicationContext()).insertUpdateDevice(device);
                 finish();
             }
 
@@ -56,18 +62,24 @@ public class RoomActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
 
-        editAmbienteDescricao = (EditText) findViewById(R.id.editAmbienteDescricao);
-        buttonAmbienteCadastrar = (Button) findViewById(R.id.buttonAmbienteCadastrar);
+        editHost = (EditText) findViewById(R.id.editHost);
+        editPort = (EditText) findViewById(R.id.editPort);
+        editDescription = (EditText) findViewById(R.id.editDescription);
+        btnSave = (Button) findViewById(R.id.btnDeviceSave);
 
-        buttonAmbienteCadastrar.setOnClickListener(eventoCadastrar);
+        btnSave.setOnClickListener(evtSave);
 
         Bundle b = getIntent().getExtras();
 
         if (b != null && b.getString("opType", null) != null && b.getString("opType").equals(OperationType.EDIT.name())) {
             try {
-                //ambienteBanco = MySQLiteHelper.getInstance(getApplicationContext()).getRoomById(b.getLong("idRoom"));
-                roomSelected = ((MyApplication) getApplication()).getRoomSelected();
-                editAmbienteDescricao.setText(roomSelected.getDescricao());
+
+                deviceSelected = ((MyApplication) getApplication()).getRoomSelected();
+
+                editHost.setText(deviceSelected.getHost());
+                editPort.setText(deviceSelected.getPort());
+                editDescription.setText(deviceSelected.getDescription());
+
             } catch (Exception ex) {
                 onDestroy();
             }

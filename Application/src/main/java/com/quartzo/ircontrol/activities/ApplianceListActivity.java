@@ -14,9 +14,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.quartzo.ircontrol.application.MyApplication;
-import com.example.android.bluetoothchat.R;
-import com.quartzo.ircontrol.persistence.Ambiente;
-import com.quartzo.ircontrol.persistence.Dispositivo;
+import com.quartzo.ircontrol.R;
+import com.quartzo.ircontrol.persistence.Device;
+import com.quartzo.ircontrol.persistence.Appliance;
 import com.quartzo.ircontrol.persistence.MySQLiteHelper;
 import com.quartzo.ircontrol.persistence.OperationType;
 
@@ -29,13 +29,13 @@ public class ApplianceListActivity extends ActionBarActivity {
     private ListView listViewAppliance;
 
     //private long idRoom;
-    private Ambiente roomSelected;
+    private Device deviceSelected;
     private AdapterView.OnItemClickListener evtClick = new AdapterView.OnItemClickListener() {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-            Dispositivo appliance = ((Dispositivo) listViewAppliance.getAdapter().getItem(position));
+            Appliance appliance = ((Appliance) listViewAppliance.getAdapter().getItem(position));
 
             ((MyApplication) getApplication()).setApplianceSelected(appliance);
 
@@ -60,7 +60,7 @@ public class ApplianceListActivity extends ActionBarActivity {
             builder.setItems(items, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item) {
 
-                    Dispositivo appliance = ((Dispositivo) listViewAppliance.getAdapter().getItem(position));
+                    Appliance appliance = ((Appliance) listViewAppliance.getAdapter().getItem(position));
 
                     if (items[item].equals("Editar")) {
 
@@ -95,7 +95,7 @@ public class ApplianceListActivity extends ActionBarActivity {
 //                idRoom = b.getLong("idRoom",0);
 //        }
 
-        roomSelected = ((MyApplication) getApplication()).getRoomSelected();
+        deviceSelected = ((MyApplication) getApplication()).getRoomSelected();
 
         listViewAppliance = (ListView) findViewById(R.id.listViewAppliance);
 
@@ -116,10 +116,10 @@ public class ApplianceListActivity extends ActionBarActivity {
     private void loadAppliances() {
 
         try {
-            List<Dispositivo> appliances = MySQLiteHelper.getInstance(getApplicationContext()).listAppliancesByIdRoom(roomSelected.getId());
+            List<Appliance> appliances = MySQLiteHelper.getInstance(getApplicationContext()).listAppliancesByIdRoom(deviceSelected.getId());
 
             if (appliances != null && appliances.size() != 0) {
-                ArrayAdapter<Dispositivo> adapter = new ArrayAdapter<Dispositivo>(this, android.R.layout.simple_list_item_1, appliances);
+                ArrayAdapter<Appliance> adapter = new ArrayAdapter<Appliance>(this, android.R.layout.simple_list_item_1, appliances);
 
                 listViewAppliance.setAdapter(adapter);
             } else {

@@ -5,22 +5,25 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.quartzo.ircontrol.application.MyApplication;
-import com.example.android.bluetoothchat.R;
+import com.quartzo.ircontrol.R;
 import com.quartzo.ircontrol.persistence.Comando;
-import com.quartzo.ircontrol.persistence.Dispositivo;
+import com.quartzo.ircontrol.persistence.Appliance;
 import com.quartzo.ircontrol.persistence.MySQLiteHelper;
+import com.quartzo.ircontrol.persistence.OperationType;
 import com.quartzo.ircontrol.persistence.Posicao;
 
 import java.text.ParseException;
@@ -30,7 +33,7 @@ import java.util.List;
 
 public class CommandActivity extends ActionBarActivity {
 
-    Dispositivo applianceSelected;
+    Appliance applianceSelected;
     Context mContext;
 
     List<Button> buttons = new ArrayList<Button>();
@@ -83,6 +86,78 @@ public class CommandActivity extends ActionBarActivity {
         }
     };
 
+    private View.OnLongClickListener evtLongClick = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+
+            try {
+                final Comando cmd = MySQLiteHelper.getInstance(mContext).getCommandById(applianceSelected.getId(), Posicao.valueOf(v.getTag().toString()).ordinal());
+
+                buttonSelected = (Button) v;
+
+                if (cmd != null) {
+
+                    final CharSequence[] items = {
+                            "Editar", "Excluir"
+                    };
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(CommandActivity.this);
+                    //builder.setTitle("Make your selection");
+                    builder.setItems(items, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int item) {
+
+                            if (items[item].equals("Editar")) {
+
+                                dialogLabel = new Dialog(CommandActivity.this);
+
+                                dialogLabel.setContentView(R.layout.dialog_custon_command);
+                                dialogLabel.setTitle("Rótulo do botão");
+
+                                // set the custom dialog components - text, image and button
+                                Button button = (Button) dialogLabel.findViewById(R.id.btnSave);
+                                final EditText edtRodulo = (EditText) dialogLabel.findViewById(R.id.buttonLabel);
+                                // if button is clicked, close the custom dialog
+                                button.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        //dialogLabel.dismiss();
+
+                                        cmd.setDescricao(edtRodulo.getText().toString());
+
+
+                                        MySQLiteHelper.getInstance(mContext).inserirAtualizarComando(cmd);
+
+                                        buttonSelected.setText(cmd.getDescricao());
+                                        dialogLabel.dismiss();
+                                    }
+                                });
+
+                                dialogLabel.show();
+
+                            } else {
+
+                                MySQLiteHelper.getInstance(mContext).deleteCommand(cmd.getAppliance().getId(),cmd.getPosicao().ordinal());
+                                buttonSelected.setText("Empty");
+                                dialogLabel.dismiss();
+                            }
+
+                        }
+                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+
+                }
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
+
+
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,7 +195,7 @@ public class CommandActivity extends ActionBarActivity {
                 cmd.setCodigo(codeReceived);
                 cmd.setDescricao(edtRodulo.getText().toString());
                 cmd.setPosicao(Posicao.valueOf(buttonSelected.getTag().toString()));
-                cmd.setDispositivo(applianceSelected);
+                cmd.setAppliance(applianceSelected);
 
                 MySQLiteHelper.getInstance(mContext).inserirAtualizarComando(cmd);
 
@@ -136,6 +211,7 @@ public class CommandActivity extends ActionBarActivity {
         for (int i = 0; i < rel.getChildCount(); i++) {
             View child = rel.getChildAt(i);
             child.setOnClickListener(evtShortClick);
+            child.setOnLongClickListener(evtLongClick);
 
             try {
                 Comando cmd = MySQLiteHelper.getInstance(mContext).getCommandById(applianceSelected.getId(), Posicao.valueOf(child.getTag().toString()).ordinal());
@@ -186,7 +262,7 @@ public class CommandActivity extends ActionBarActivity {
         private AlertDialog.Builder evtCodeReceived = new AlertDialog.Builder(CommandActivity.this)
                 .setTitle("Código Recebido")
                 .setMessage("Deseja testar o comando?")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.btn_yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
                         IREmiterAssync irReceiver = new IREmiterAssync(getApplication(), codeReceived);
@@ -199,11 +275,10 @@ public class CommandActivity extends ActionBarActivity {
 
                     }
                 })
-                .setNeutralButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                .setNeutralButton(R.string.btn_no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        IRReceiverAssync irReceiver = new IRReceiverAssync(getApplication());
-                        irReceiver.execute();
+                        dialogLabel.show();
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

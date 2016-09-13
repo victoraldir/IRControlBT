@@ -5,9 +5,10 @@ package com.quartzo.ircontrol.persistence;
 *
  */
 
-public class Comando {
+import org.json.JSONException;
+import org.json.JSONObject;
 
-    //private long id;
+public class Comando {
 
     private String descricao;
 
@@ -15,15 +16,7 @@ public class Comando {
 
     private Posicao posicao;
 
-    private Dispositivo dispositivo;
-
-//    public long getId() {
-//        return id;
-//    }
-
-//    public void setId(long id) {
-//        this.id = id;
-//    }
+    private Appliance appliance;
 
     public String getDescricao() {
         return descricao;
@@ -41,12 +34,12 @@ public class Comando {
         this.codigo = codigo;
     }
 
-    public Dispositivo getDispositivo() {
-        return dispositivo;
+    public Appliance getAppliance() {
+        return appliance;
     }
 
-    public void setDispositivo(Dispositivo dispositivo) {
-        this.dispositivo = dispositivo;
+    public void setAppliance(Appliance appliance) {
+        this.appliance = appliance;
     }
 
     public Posicao getPosicao() {
@@ -55,5 +48,22 @@ public class Comando {
 
     public void setPosicao(Posicao posicao) {
         this.posicao = posicao;
+    }
+
+    public String toJSON(){
+
+        JSONObject jsonObject= new JSONObject();
+        try {
+            jsonObject.put("descricao", getDescricao());
+            jsonObject.put("codigo", getCodigo());
+            jsonObject.put("posicao", getPosicao());
+
+            return jsonObject.toString();
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return "";
+        }
+
     }
 }

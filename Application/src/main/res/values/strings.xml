@@ -42,9 +42,16 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_devices_list">DevicesListActivity</string>
+    <string name="title_activity_devices_list">Appliances</string>
     <string name="title_activity_appliance">ApplianceActivity</string>
     <string name="title_activity_command">CommandActivity</string>
     <string name="add">add</string>
+    <string name="label_host">Host</string>
+    <string name="label_port">Port</string>
+    <string name="label_desc">Description</string>
+    <string name="btn_save">Save</string>
+
+    <string name="btn_yes">Yes</string>
+    <string name="btn_no">No</string>
 
 </resources>

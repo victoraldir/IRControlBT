@@ -2,30 +2,30 @@ package com.quartzo.ircontrol.application;
 
 import android.app.Application;
 
-import com.quartzo.ircontrol.persistence.Ambiente;
-import com.quartzo.ircontrol.persistence.Dispositivo;
+import com.quartzo.ircontrol.persistence.Device;
+import com.quartzo.ircontrol.persistence.Appliance;
 
 /**
  * Created by victor on 26/05/15.
  */
 public class MyApplication extends Application {
 
-    private Ambiente roomSelected;
-    private Dispositivo applianceSelected;
+    private Device roomSelected;
+    private Appliance applianceSelected;
 
-    public Ambiente getRoomSelected() {
+    public Device getRoomSelected() {
         return roomSelected;
     }
 
-    public void setRoomSelected(Ambiente roomSelected) {
+    public void setRoomSelected(Device roomSelected) {
         this.roomSelected = roomSelected;
     }
 
-    public Dispositivo getApplianceSelected() {
+    public Appliance getApplianceSelected() {
         return applianceSelected;
     }
 
-    public void setApplianceSelected(Dispositivo applianceSelected) {
+    public void setApplianceSelected(Appliance applianceSelected) {
         this.applianceSelected = applianceSelected;
     }
 }
