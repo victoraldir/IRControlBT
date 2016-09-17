@@ -1,7 +1,7 @@
 package com.quartzo.ircontrol.activities;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,19 +11,48 @@ import android.widget.Toast;
 
 import com.quartzo.ircontrol.R;
 import com.quartzo.ircontrol.application.MyApplication;
-import com.quartzo.ircontrol.persistence.Device;
 import com.quartzo.ircontrol.persistence.Appliance;
+import com.quartzo.ircontrol.persistence.Device;
 import com.quartzo.ircontrol.persistence.MySQLiteHelper;
 import com.quartzo.ircontrol.persistence.OperationType;
 
 
-public class ApplianceActivity extends ActionBarActivity {
+public class ApplianceActivity extends Activity {
 
 
-    EditText editApplianceDesc;
-    Button btnApplianceInsert;
-    Appliance applianceSelected = null;
-    Device deviceSelected;
+    private EditText editApplianceDesc;
+    private Button btnApplianceInsert;
+    private Appliance applianceSelected = null;
+    private Device deviceSelected;
+    private MyApplication myApplication;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_appliance);
+
+        myApplication = ((MyApplication) getApplication());
+
+        editApplianceDesc = (EditText) findViewById(R.id.editApplianceDescription);
+        btnApplianceInsert = (Button) findViewById(R.id.buttonApplianceInsert);
+
+        btnApplianceInsert.setOnClickListener(evtInsert);
+
+        Bundle b = getIntent().getExtras();
+
+        deviceSelected = myApplication.getDeviceSelected();
+
+        if (b != null && b.getString("opType", null) != null && b.getString("opType").equals(OperationType.EDIT.name())) {
+            try {
+                //appliancePersisted = MySQLiteHelper.getInstance(getApplicationContext()).getApplianceById(((MyApplication) getApplication()).getApplianceSelected().getId());
+                applianceSelected = myApplication.getApplianceSelected();
+                editApplianceDesc.setText(applianceSelected.getDescription());
+            } catch (Exception ex) {
+                onDestroy();
+            }
+        }
+    }
+
     //private long idRoom;
     private View.OnClickListener evtInsert = new View.OnClickListener() {
 
@@ -52,37 +81,12 @@ public class ApplianceActivity extends ActionBarActivity {
                 }
 
                 newAppliance.setDescription(descricao);
-                MySQLiteHelper.getInstance(getApplicationContext()).inserirAtualizarDispositivo(newAppliance);
+                MySQLiteHelper.getInstance(getApplicationContext()).insertUpdateAppliance(newAppliance);
                 finish();
             }
 
         }
     };
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_appliance);
-
-        editApplianceDesc = (EditText) findViewById(R.id.editApplianceDescription);
-        btnApplianceInsert = (Button) findViewById(R.id.buttonApplianceInsert);
-
-        btnApplianceInsert.setOnClickListener(evtInsert);
-
-        Bundle b = getIntent().getExtras();
-
-        deviceSelected = ((MyApplication) getApplication()).getRoomSelected();
-
-        if (b != null && b.getString("opType", null) != null && b.getString("opType").equals(OperationType.EDIT.name())) {
-            try {
-                //appliancePersisted = MySQLiteHelper.getInstance(getApplicationContext()).getApplianceById(((MyApplication) getApplication()).getApplianceSelected().getId());
-                applianceSelected = ((MyApplication) getApplication()).getApplianceSelected();
-                editApplianceDesc.setText(applianceSelected.getDescription());
-            } catch (Exception ex) {
-                onDestroy();
-            }
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

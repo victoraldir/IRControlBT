@@ -3,7 +3,7 @@ package com.quartzo.ircontrol.persistence;
 /**
  * Created by victor on 05/04/15.
  */
-public enum Posicao {
+public enum Position {
 
     _0_0,
     _0_1,

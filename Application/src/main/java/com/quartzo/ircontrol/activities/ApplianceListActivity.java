@@ -1,10 +1,10 @@
 package com.quartzo.ircontrol.activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,10 +13,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.quartzo.ircontrol.application.MyApplication;
 import com.quartzo.ircontrol.R;
-import com.quartzo.ircontrol.persistence.Device;
+import com.quartzo.ircontrol.application.MyApplication;
 import com.quartzo.ircontrol.persistence.Appliance;
+import com.quartzo.ircontrol.persistence.Device;
 import com.quartzo.ircontrol.persistence.MySQLiteHelper;
 import com.quartzo.ircontrol.persistence.OperationType;
 
@@ -24,7 +24,7 @@ import java.text.ParseException;
 import java.util.List;
 
 
-public class ApplianceListActivity extends ActionBarActivity {
+public class ApplianceListActivity extends Activity {
 
     private ListView listViewAppliance;
 
@@ -36,6 +36,8 @@ public class ApplianceListActivity extends ActionBarActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
             Appliance appliance = ((Appliance) listViewAppliance.getAdapter().getItem(position));
+
+            appliance.setDevice(deviceSelected);
 
             ((MyApplication) getApplication()).setApplianceSelected(appliance);
 
@@ -72,7 +74,7 @@ public class ApplianceListActivity extends ActionBarActivity {
                         startActivity(roomIntent);
 
                     } else {
-                        MySQLiteHelper.getInstance(getApplication()).deletarDispositivo(appliance.getId());
+                        MySQLiteHelper.getInstance(getApplication()).deleteAppliance(appliance.getId());
                         loadAppliances();
                     }
 
@@ -95,7 +97,7 @@ public class ApplianceListActivity extends ActionBarActivity {
 //                idRoom = b.getLong("idRoom",0);
 //        }
 
-        deviceSelected = ((MyApplication) getApplication()).getRoomSelected();
+        deviceSelected = ((MyApplication) getApplication()).getDeviceSelected();
 
         listViewAppliance = (ListView) findViewById(R.id.listViewAppliance);
 
@@ -116,7 +118,7 @@ public class ApplianceListActivity extends ActionBarActivity {
     private void loadAppliances() {
 
         try {
-            List<Appliance> appliances = MySQLiteHelper.getInstance(getApplicationContext()).listAppliancesByIdRoom(deviceSelected.getId());
+            List<Appliance> appliances = MySQLiteHelper.getInstance(getApplicationContext()).listAppliancesByDeviceId(deviceSelected.getId());
 
             if (appliances != null && appliances.size() != 0) {
                 ArrayAdapter<Appliance> adapter = new ArrayAdapter<Appliance>(this, android.R.layout.simple_list_item_1, appliances);
@@ -135,7 +137,7 @@ public class ApplianceListActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        MenuInflater inflater=getMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
 
         return super.onCreateOptionsMenu(menu);
@@ -144,7 +146,7 @@ public class ApplianceListActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.add:
                 Intent it = new Intent(getApplicationContext(), ApplianceActivity.class);
                 startActivity(it);

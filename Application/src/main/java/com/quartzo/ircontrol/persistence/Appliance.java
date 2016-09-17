@@ -14,8 +14,6 @@ public class Appliance {
 
     private Device device;
 
-    private Set<Comando> commands;
-
     public long getId() {
         return id;
     }
@@ -40,16 +38,12 @@ public class Appliance {
         this.device = device;
     }
 
-    public Set<Comando> getCommands() {
-        return commands;
-    }
-
-    public void setCommands(Set<Comando> commands) {
-        this.commands = commands;
-    }
-
     @Override
     public String toString() {
-        return description;
+        return "Appliance{" +
+                "id=" + id +
+                ", description='" + description + '\'' +
+                ", device=" + device +
+                '}';
     }
 }

@@ -17,12 +17,12 @@
 package com.quartzo.ircontrol.activities;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,8 +31,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.quartzo.ircontrol.application.MyApplication;
 import com.quartzo.ircontrol.R;
+import com.quartzo.ircontrol.application.MyApplication;
 import com.quartzo.ircontrol.persistence.Device;
 import com.quartzo.ircontrol.persistence.MySQLiteHelper;
 import com.quartzo.ircontrol.persistence.OperationType;
@@ -46,7 +46,7 @@ import java.util.List;
  * For devices with displays with a width of 720dp or greater, the sample log is always visible,
  * on other devices it's visibility is controlled by an item on the Action Bar.
  */
-public class DeviceListActivity extends ActionBarActivity {
+public class DeviceListActivity extends Activity {
 
     public static final String TAG = "RoomListActivity";
 
@@ -73,7 +73,7 @@ public class DeviceListActivity extends ActionBarActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
             Device room = ((Device) listViewRoom.getAdapter().getItem(position));
-            ((MyApplication) getApplication()).setRoomSelected(room);
+            ((MyApplication) getApplication()).setDeviceSelected(room);
             //Bundle b = new Bundle();
 
             //b.putLong("idRoom", room.getId());
@@ -95,11 +95,11 @@ public class DeviceListActivity extends ActionBarActivity {
             builder.setItems(items, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item) {
 
-                    Device room = ((Device) listViewRoom.getAdapter().getItem(position));
+                    Device device = ((Device) listViewRoom.getAdapter().getItem(position));
 
                     if (items[item].equals("Editar")) {
 
-                        ((MyApplication) getApplication()).setRoomSelected(room);
+                        ((MyApplication) getApplication()).setDeviceSelected(device);
 
                         Bundle b = new Bundle();
                         b.putString("opType", OperationType.EDIT.name());
@@ -108,7 +108,7 @@ public class DeviceListActivity extends ActionBarActivity {
                         startActivity(roomIntent);
 
                     } else {
-                        MySQLiteHelper.getInstance(getApplication()).deleteRoom(room.getId());
+                        MySQLiteHelper.getInstance(getApplication()).deleteDevice(device.getId());
                         carregarListaAmbientes();
                     }
 
@@ -144,7 +144,7 @@ public class DeviceListActivity extends ActionBarActivity {
     }
 
     private void carregarListaAmbientes() {
-        List<Device> ambientes = MySQLiteHelper.getInstance(getApplicationContext()).listarAmbientes();
+        List<Device> ambientes = MySQLiteHelper.getInstance(getApplicationContext()).listDevice();
 
         if (ambientes != null && ambientes.size() != 0) {
             ArrayAdapter<Device> adapter = new ArrayAdapter<Device>(this, android.R.layout.simple_list_item_1, ambientes);
@@ -158,7 +158,7 @@ public class DeviceListActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        MenuInflater inflater=getMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
 
         return super.onCreateOptionsMenu(menu);
@@ -167,9 +167,9 @@ public class DeviceListActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.add:
-                Intent it = new Intent(getApplicationContext(),DeviceActivity.class);
+                Intent it = new Intent(getApplicationContext(), DeviceActivity.class);
                 startActivity(it);
                 break;
         }
