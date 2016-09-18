@@ -1,7 +1,5 @@
 package com.quartzo.ircontrol.persistence;
 
-import java.util.Set;
-
 /**
  * Created by victor on 19/08/13.
  */

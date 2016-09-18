@@ -5,8 +5,6 @@ package com.quartzo.ircontrol.persistence;
 *
  */
 
-import com.quartzo.ircontrol.utils.Constants;
-
 public class Command {
 
     private String description;

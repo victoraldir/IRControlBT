@@ -7,9 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -179,52 +177,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         }
     }
 
-//    public List<Appliance> listAppliance() throws ParseException {
-//
-//        List<Appliance> appliances = new LinkedList<Appliance>();
-//
-//        // 1. build the query
-//        //String query = "SELECT * FROM " + TB_SOLICITACAO + " WHERE cancelamento = 0";
-//
-//        String query = "SELECT * FROM " + TB_APPLIANCE + " AS d LEFT OUTER JOIN " + TB_COMMAND + " AS c ON d." + KEY_APPLIANCE_ID + " = c." + KEY_COMMAND_APPLIANCE_ID;
-//
-//        // 2. get reference to writable DB
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor cursor = db.rawQuery(query, null);
-//        //db.endTransaction();
-//
-//        // 3. go over each row, build book and add it to list
-//        Appliance appliance = null;
-//        if (cursor.moveToFirst()) {
-//            do {
-//
-//                appliance = new Appliance();
-//                appliance.setId(Integer.parseInt(cursor.getString(0)));
-//                appliance.setDescription(cursor.getString(1));
-//
-//                //dispositivo.setComandos(listarRastreiosPorSolicitacaoId(solicitaca  o.getId()));
-//
-//                // Add book to books
-//                appliances.add(appliance);
-//            } while (cursor.moveToNext());
-//        }
-//
-//        if (cursor != null) {
-//            cursor.close();
-//        }
-//        if (db != null) {
-//            db.close();
-//        }
-//
-//        if (appliances.isEmpty()) {
-//            return null;
-//        } else {
-//
-//            return appliances;
-//
-//        }
-//
-//    }
 
     public List<Appliance> listAppliancesByDeviceId(long idDevice) throws ParseException {
 
@@ -413,7 +365,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 command.setPosition(Position.values()[(int) cursor.getLong(cursor.getColumnIndex(KEY_COMMAND_POSITION_ID))]);
                 command.setAppliance(getApplianceById(idAppliance));
 
-                commands.put(command.getPosition(),command);
+                commands.put(command.getPosition(), command);
 
             } while (cursor.moveToNext());
         }
@@ -456,100 +408,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         }
 
         return device;
-
-    }
-
-    public List<Command> listarComandos() throws ParseException {
-
-        List<Command> commands = new LinkedList<Command>();
-
-        // 1. build the query
-        //String query = "SELECT * FROM " + TB_SOLICITACAO + " WHERE cancelamento = 0";
-
-        String query = "SELECT * FROM " + TB_COMMAND + " AS c ";
-
-        // 2. get reference to writable DB
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-        //db.endTransaction();
-
-        // 3. go over each row, build book and add it to list
-        Command command = null;
-        if (cursor.moveToFirst()) {
-            do {
-
-                command = new Command();
-                //comando.setId(Integer.parseInt(cursor.getString(0)));
-                command.setDescription(cursor.getString(1));
-
-                command.setAppliance(getApplianceById(cursor.getLong(2)));
-
-                // Add book to books
-                commands.add(command);
-            } while (cursor.moveToNext());
-        }
-
-        if (cursor != null) {
-            cursor.close();
-        }
-        if (db != null) {
-            db.close();
-        }
-
-        if (commands.isEmpty()) {
-            return null;
-        } else {
-
-            return commands;
-
-        }
-
-    }
-
-    public List<Command> listarComandosPorDispositivoId(long id) {
-
-        List<Command> commands = new LinkedList<Command>();
-
-        // 1. build the query
-        //String query = "SELECT * FROM " + TB_SOLICITACAO + " WHERE cancelamento = 0";
-
-        String query = "SELECT * FROM " + TB_COMMAND + " AS c WHERE c." + KEY_COMMAND_APPLIANCE_ID + " = " + id;
-
-        // 2. get reference to writable DB
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-        //db.endTransaction();
-
-        // 3. go over each row, build book and add it to list
-        Command command = null;
-        if (cursor.moveToFirst()) {
-            do {
-
-                command = new Command();
-                //comando.setId(Integer.parseInt(cursor.getString(0)));
-                command.setDescription(cursor.getString(1));
-
-                command.setAppliance(getApplianceById(id));
-
-                // Add book to books
-                commands.add(command);
-            } while (cursor.moveToNext());
-        }
-
-        if (cursor != null) {
-            cursor.close();
-        }
-        if (db != null) {
-            db.close();
-        }
-
-        if (commands.isEmpty()) {
-            return null;
-        } else {
-
-            return commands;
-
-        }
 
     }
 

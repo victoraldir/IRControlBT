@@ -41,11 +41,8 @@ public class ApplianceListActivity extends Activity {
 
             ((MyApplication) getApplication()).setApplianceSelected(appliance);
 
-            //Bundle b = new Bundle();
-
-            //b.putLong("idAppliance", appliance.getId());
             Intent commandIntent = new Intent(getApplication(), CommandActivity.class);
-            //commandIntent.putExtras(b);
+
             startActivity(commandIntent);
         }
     };
@@ -58,7 +55,7 @@ public class ApplianceListActivity extends Activity {
             };
 
             AlertDialog.Builder builder = new AlertDialog.Builder(ApplianceListActivity.this);
-            //builder.setTitle("Make your selection");
+
             builder.setItems(items, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item) {
 
@@ -90,12 +87,6 @@ public class ApplianceListActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appliance_list);
-
-        //Bundle b = getIntent().getExtras();
-
-//        if(b != null && b.getLong("idRoom", 0) != 0){
-//                idRoom = b.getLong("idRoom",0);
-//        }
 
         deviceSelected = ((MyApplication) getApplication()).getDeviceSelected();
 

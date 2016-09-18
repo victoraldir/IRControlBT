@@ -34,8 +34,8 @@ public class VolleySingleton {
 
     public <T> void addToRequestQueue(Request<T> req) {
 
-        if(BuildConfig.DEBUG){
-            Log.d(TAG,"VolleySingleton.addToRequestQueue: requesting URL " + req.getUrl());
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "VolleySingleton.addToRequestQueue: requesting URL " + req.getUrl());
         }
 
         getRequestQueue().add(req);

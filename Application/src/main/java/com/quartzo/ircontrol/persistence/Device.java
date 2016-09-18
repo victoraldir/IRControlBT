@@ -51,7 +51,7 @@ public class Device {
         return getHost().concat(":").concat(getPort() + " ").concat("(").concat(getDescription()).concat(")");
     }
 
-    public URL getDomain(){
+    public URL getDomain() {
 
         URL url = null;
 
@@ -63,7 +63,7 @@ public class Device {
         return url;
     }
 
-    public URL getURLSender(String code){
+    public URL getURLSender(String code) {
         URL url = null;
         try {
             url = new URL(getDomain(), Constants.URL_SENDER + "/" + code);
@@ -73,7 +73,7 @@ public class Device {
         return url;
     }
 
-    public URL getURLReceiver(){
+    public URL getURLReceiver() {
         URL url = null;
         try {
             url = new URL(getDomain(), Constants.URL_RECEIVER);

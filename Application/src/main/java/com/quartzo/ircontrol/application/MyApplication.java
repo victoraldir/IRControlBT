@@ -1,7 +1,6 @@
 package com.quartzo.ircontrol.application;
 
 import android.app.Application;
-import android.os.Looper;
 import android.util.Log;
 
 import com.quartzo.ircontrol.BuildConfig;
@@ -17,7 +16,7 @@ public class MyApplication extends Application {
     private Appliance applianceSelected;
     private String TAG = "myIrcontrolLog";
 
-    public MyApplication(){
+    public MyApplication() {
 
     }
 
@@ -27,8 +26,8 @@ public class MyApplication extends Application {
 
     public void setDeviceSelected(Device deviceSelected) {
 
-        if(BuildConfig.DEBUG){
-            Log.d(TAG,"MyApplication.setDeviceSelected: " + deviceSelected);
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "MyApplication.setDeviceSelected: " + deviceSelected);
         }
 
         this.deviceSelected = deviceSelected;
@@ -40,7 +39,7 @@ public class MyApplication extends Application {
 
     public void setApplianceSelected(Appliance applianceSelected) {
 
-        if(BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             Log.d(TAG, "MyApplication.setApplianceSelected: " + applianceSelected);
         }
         this.applianceSelected = applianceSelected;
