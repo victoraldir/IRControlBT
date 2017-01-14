@@ -13,8 +13,8 @@
 aREST rest = aREST();
 
 // WiFi parameters
-const char* ssid = "Cheetos";
-const char* password = "J3rv1sT3c01";
+const char* ssid = "YOURSSDID";
+const char* password = "YOURPASSWORD";
 
 #define LIGHTWEIGHT 1
 // The port to listen for incoming TCP connections
