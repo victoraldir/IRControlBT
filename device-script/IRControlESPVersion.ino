@@ -13,8 +13,8 @@
 aREST rest = aREST();
 
 // WiFi parameters
-const char* ssid = "YOURSSDID";
-const char* password = "YOURPASSWORD";
+const char* ssid = "Cheetos";
+const char* password = "J3rv1sT3c01";
 
 #define LIGHTWEIGHT 1
 // The port to listen for incoming TCP connections
@@ -81,22 +81,27 @@ void loop() {
 }
 
 // Custom function accessible by the API
-// Wait the command for 5 seconds.
+// Wait the command for 3 seconds.
 int receiveCommand(String command){
 
   int timeStart = millis();
   boolean flag = true;
   while(flag){
 
-    //Serial.println("Waiting for command");
-    if((millis() - timeStart) > TIMEOUT){
+    long remaining = millis() - timeStart;
+    
+    Serial.print("Waiting for command. Time remaining: ");
+    Serial.println(remaining);
+    if(remaining > TIMEOUT){
         //TODO Implement code reception here
         flag = false;
     }
 
+    delay(33);
   }
-  
-  return 1;
+
+  yield();
+  return 1;  
 }
 
 
